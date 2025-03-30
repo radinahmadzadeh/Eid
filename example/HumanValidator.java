@@ -7,6 +7,11 @@ import db.Entity;
 public class HumanValidator implements Validator {
 
     @Override
+    public void validate(Object obj) {
+
+    }
+
+    @Override
     public void validate(Entity entity) throws InvalidEntityException {
         if (!(entity instanceof Human)) {
             throw new IllegalArgumentException("Entity is not of type Human");

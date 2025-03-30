@@ -1,11 +1,18 @@
 package db;
 
-import example.Human;
-
 public abstract class Entity {
-    public int id;
-
-    public abstract Human copy();
-
-    public abstract int getEntityCode();
+    protected int id;
+    private static int counter = 1;
+    public Entity() {
+        this.id = counter++;
+    }
+    public int getId() {
+        return id;
+    }
+    public abstract Entity copy();
+    public int getEntityCode() {
+        return this.getClass().getSimpleName().hashCode();
+    }
+    public void setId(int i) {
+    }
 }
