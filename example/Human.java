@@ -10,7 +10,9 @@ public class Human extends Entity {
     }
 
     @Override
-    public String toString() {
-        return "Human{id=" + id + ", name='" + name + "'}";
+    public Human copy() {
+        Human copyHuman = new Human(this.name);
+        copyHuman.id = this.id;
+        return copyHuman;
     }
 }
