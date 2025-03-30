@@ -1,50 +1,32 @@
 package db;
-
-import db.exception.InvalidEntityException;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Date;
 
 public class Database {
+    private static HashMap<Integer, Entity> entities = new HashMap<>();
+    private static int idCounter = 1; // Counter for generating unique IDs
 
-    private static ArrayList<Entity> entities = new ArrayList<>();
-    private static HashMap<Integer, Validator> validators = new HashMap<>();
-
-    public static void registerValidator(int entityCode, Validator validator) {
-        if (validators.containsKey(entityCode)) {
-            throw new IllegalArgumentException("Validator for this entity code already exists.");
+    public static void add(Entity entity) {
+        if (entity instanceof Trackable) {
+            Trackable trackableEntity = (Trackable) entity;
+            Date currentDate = new Date();
+            trackableEntity.setCreationDate(currentDate);
+            trackableEntity.setLastModificationDate(currentDate);
         }
-        validators.put(entityCode, validator);
+        entity.id = idCounter++;
+        entities.put(entity.id, entity);
     }
 
-    public static void add(Entity entity) throws InvalidEntityException {
-        Validator validator = validators.get(entity.getEntityCode());
-        if (validator != null) {
-            validator.validate(entity);
+    public static void update(Entity entity) {
+        if (entity instanceof Trackable) {
+            Trackable trackableEntity = (Trackable) entity;
+            Date currentDate = new Date();
+            trackableEntity.setLastModificationDate(currentDate);
         }
-        entity = entity.copy();
-        entities.add(entity);
-    }
-
-    public static void update(Entity entity) throws InvalidEntityException {
-        Validator validator = validators.get(entity.getEntityCode());
-        if (validator != null) {
-            validator.validate(entity);
-        }
-        for (int i = 0; i < entities.size(); i++) {
-            if (entities.get(i).id == entity.id) {
-                entities.set(i, entity.copy());
-                return;
-            }
-        }
-        throw new InvalidEntityException("Entity with id " + entity.id + " not found.");
+        entities.put(entity.id, entity);
     }
 
     public static Entity get(int id) {
-        for (Entity entity : entities) {
-            if (entity.id == id) {
-                return entity.copy();
-            }
-        }
-        return null;
+        return entities.get(id);
     }
 }
